@@ -1,0 +1,36 @@
+@page
+@model RomanceBookApp.Pages.Books.IndexModel
+
+<h1>Books List</h1>
+
+<p>
+    <a asp-page="Create">Create New Book</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Tropes</th>
+            <th>Average Rating</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var book in Model.Books)
+        {
+        <tr>
+            <td>@book.Title</td>
+            <td>@book.Author</td>
+            <td>@book.Tropes</td>
+            <td>@book.AverageRating</td>
+            <td>
+                <a asp-page="Edit" asp-route-id="@book.Id">Edit</a> |
+                <a asp-page="Details" asp-route-id="@book.Id">Details</a> |
+                <a asp-page="Delete" asp-route-id="@book.Id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

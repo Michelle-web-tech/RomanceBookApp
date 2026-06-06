@@ -1,0 +1,862 @@
+﻿@{
+    ViewData["Title"] = "My Books";
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Georgia', 'Times New Roman', serif;
+        background: linear-gradient(135deg, #e8d5f5 0%, #d4c4e8 50%, #f5d0d0 100%);
+        min-height: 100vh;
+        padding: 40px 20px;
+        transition: all 0.3s ease;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        padding: 35px;
+        transition: all 0.3s ease;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 2.5em;
+        font-family: 'Georgia', 'Times New Roman', serif;
+        font-weight: 400;
+        font-style: italic;
+        background: linear-gradient(135deg, #9b59b6, #e84393, #5dade2);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 5px;
+    }
+
+    h3 {
+        text-align: center;
+        color: #7f8c8d;
+        font-weight: 400;
+        margin-bottom: 20px;
+        font-style: italic;
+        font-size: 1.2em;
+    }
+
+    input, button, select {
+        padding: 8px;
+        margin: 5px;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .book-card {
+        background: linear-gradient(135deg, #ffffff, #faf0fa);
+        border: 1px solid #dcc6f0;
+        padding: 15px;
+        margin: 15px 0;
+        border-radius: 20px;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+        .book-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(155, 89, 182, 0.15);
+            border-color: #c29bff;
+        }
+
+    button {
+        background: linear-gradient(135deg, #9b59b6, #e84393);
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+
+        button:hover {
+            background: linear-gradient(135deg, #8e44ad, #d63384);
+            transform: scale(1.02);
+        }
+
+    .dashboard {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+        justify-content: center;
+    }
+
+    .dashboard-card {
+        background: linear-gradient(135deg, #f3e8ff, #fce4ec);
+        border-radius: 15px;
+        padding: 15px;
+        min-width: 100px;
+        text-align: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .dashboard-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.2);
+        }
+
+    .dashboard-number {
+        font-size: 2em;
+        font-weight: bold;
+        background: linear-gradient(135deg, #9b59b6, #e84393);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        background: #ddd;
+        color: #333;
+        padding: 8px 16px;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #9b59b6, #e84393);
+            color: white;
+        }
+
+    .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .search-group {
+        flex: 2;
+        display: flex;
+        gap: 10px;
+        position: relative;
+    }
+
+        .search-group input {
+            flex: 1;
+        }
+
+    .action-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 15px;
+    }
+
+        .form-row input, .form-row select {
+            flex: 1;
+            min-width: 150px;
+        }
+
+    .suggestions-box {
+        position: absolute;
+        background: white;
+        border: 1px solid #dcc6f0;
+        max-height: 200px;
+        overflow-y: auto;
+        width: calc(100% - 80px);
+        top: 35px;
+        left: 0;
+        z-index: 1000;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+
+        .suggestions-box div {
+            padding: 8px;
+            cursor: pointer;
+        }
+
+            .suggestions-box div:hover {
+                background: #e8d5f5;
+            }
+
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .category-count-section {
+        background: linear-gradient(135deg, #f3e8ff, #fce4ec, #d6eaff);
+        border-radius: 20px;
+        padding: 15px;
+        margin: 20px 0;
+        text-align: center;
+    }
+
+    .count-card {
+        background: white;
+        border-radius: 15px;
+        padding: 10px;
+        min-width: 140px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+        .count-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.15);
+        }
+
+    .count-number {
+        font-size: 28px;
+        font-weight: bold;
+        background: linear-gradient(135deg, #9b59b6, #e84393);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .counts-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 3px 8px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .status-want {
+        background: #ffd700;
+        color: #333;
+    }
+
+    .status-reading {
+        background: #3498db;
+        color: white;
+    }
+
+    .status-read {
+        background: #2ecc71;
+        color: white;
+    }
+
+    .status-tbr {
+        background: #e74c3c;
+        color: white;
+    }
+
+    .recommendation-card {
+        background: #f9ebf2;
+        border-radius: 15px;
+        padding: 15px;
+        width: 200px;
+        transition: all 0.3s ease;
+        border: 1px solid #dcc6f0;
+    }
+
+        .recommendation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.15);
+        }
+
+    .recommendations-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .dark-mode {
+        background: linear-gradient(135deg, #1a0b2e 0%, #2d1b3e 50%, #3d1b2e 100%);
+    }
+
+        .dark-mode .container {
+            background: #1a1a2e;
+            color: #e0e0ff;
+            border: 1px solid #8b5cf6;
+        }
+
+        .dark-mode .book-card {
+            background: linear-gradient(135deg, #2d1b3e, #1a0b2e);
+            border-color: #8b5cf6;
+        }
+
+        .dark-mode button {
+            background: linear-gradient(135deg, #8b5cf6, #ff6b6b);
+            color: white;
+        }
+
+        .dark-mode h1 {
+            background: linear-gradient(135deg, #a78bfa, #ff6b6b, #5dade2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .dark-mode .category-count-section {
+            background: linear-gradient(135deg, #2d1b3e, #3d1b2e, #1a0b2e);
+            border: 1px solid #8b5cf6;
+        }
+
+        .dark-mode .count-card {
+            background: #2d1b3e;
+            border: 1px solid #ff6b6b;
+        }
+
+        .dark-mode .count-number {
+            background: linear-gradient(135deg, #a78bfa, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .dark-mode .suggestions-box {
+            background: #2d1b3e;
+            border-color: #8b5cf6;
+        }
+
+        .dark-mode .dashboard-card {
+            background: #2d1b3e;
+            border: 1px solid #8b5cf6;
+        }
+
+        .dark-mode .recommendation-card {
+            background: #2d1b3e;
+            border: 1px solid #8b5cf6;
+        }
+</style>
+
+<div class="container">
+    <button class="dark-mode-btn" onclick="toggleDarkMode()" style="float:right">🌙 Dark Mode</button>
+    <h1>✨ Pages of Possibility ✨</h1>
+    <h3>A Beautiful Escape for Lost Hearts</h3>
+
+    <div class="dashboard">
+        <div class="dashboard-card" onclick="loadBooks()">
+            <div>📚 Total</div>
+            <div class="dashboard-number" id="totalCount">0</div>
+        </div>
+        <div class="dashboard-card" onclick="showTab('want')">
+            <div>⭐ Want to Read</div>
+            <div class="dashboard-number" id="wantCount">0</div>
+        </div>
+        <div class="dashboard-card" onclick="showTab('reading')">
+            <div>📘 Currently Reading</div>
+            <div class="dashboard-number" id="readingCount">0</div>
+        </div>
+        <div class="dashboard-card" onclick="showTab('read')">
+            <div>✅ Read</div>
+            <div class="dashboard-number" id="readCount">0</div>
+        </div>
+        <div class="dashboard-card" onclick="showTab('tbr')">
+            <div>⏳ To Be Read</div>
+            <div class="dashboard-number" id="tbrCount">0</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('all')">📖 All Books</button>
+        <button class="tab-btn" onclick="showTab('want')">⭐ Want to Read</button>
+        <button class="tab-btn" onclick="showTab('reading')">📘 Currently Reading</button>
+        <button class="tab-btn" onclick="showTab('read')">✅ Read</button>
+        <button class="tab-btn" onclick="showTab('tbr')">⏳ To Be Read</button>
+        <button class="tab-btn" onclick="showTab('recommendations')">🎯 Recommendations</button>
+    </div>
+
+    <div class="category-count-section">
+        <h3>📊 Book Collection (Click to Filter)</h3>
+        <div id="categoryCounts" class="counts-container">
+            Loading counts...
+        </div>
+    </div>
+
+    <div class="button-group">
+        <div class="search-group">
+            <input type="text" id="searchInput" placeholder="Search by title..." onkeyup="showSuggestions()" onkeypress="handleKeyPress(event)">
+            <div id="suggestions" class="suggestions-box" style="display:none;"></div>
+            <button onclick="searchBooks()">Search</button>
+        </div>
+        <div class="action-buttons">
+            <button onclick="loadBooks()">Show All</button>
+            <button onclick="sortByRating()">Sort by Rating</button>
+        </div>
+    </div>
+
+    <div class="filter-group">
+        <select id="tropeSelect">
+            <option value="">-- Filter by Trope --</option>
+            <option value="Enemies to Lovers">💔 Enemies to Lovers</option>
+            <option value="Fake Dating">🎭 Fake Dating</option>
+            <option value="Friends to Lovers">👫 Friends to Lovers</option>
+            <option value="Slow Burn">🔥 Slow Burn</option>
+            <option value="Grumpy Sunshine">☀️ Grumpy Sunshine</option>
+            <option value="Forced Proximity">🏠 Forced Proximity</option>
+            <option value="Second Chance">🔄 Second Chance</option>
+            <option value="Marriage of Convenience">💍 Marriage of Convenience</option>
+            <option value="Age Gap">📅 Age Gap</option>
+            <option value="Love Triangle">🔺 Love Triangle</option>
+            <option value="Found Family">👨‍👩‍👧‍👦 Found Family</option>
+            <option value="Dark Romance">🌑 Dark Romance</option>
+            <option value="Mafia Romance">🔫 Mafia Romance</option>
+            <option value="Billionaire Romance">💰 Billionaire Romance</option>
+            <option value="Sports Romance">🏒 Sports Romance</option>
+            <option value="College Romance">🎓 College Romance</option>
+            <option value="Small Town">🏘️ Small Town</option>
+            <option value="Office Romance">💼 Office Romance</option>
+            <option value="Fantasy">🧚 Fantasy</option>
+            <option value="Dragons">🐉 Dragons</option>
+            <option value="Magic">🔮 Magic</option>
+            <option value="Faerie">🧝 Faerie</option>
+            <option value="Psychological Thriller">🧠 Psychological Thriller</option>
+            <option value="Mystery">🔍 Mystery</option>
+            <option value="Cozy Mystery">📚 Cozy Mystery</option>
+            <option value="Sci-Fi">🚀 Sci-Fi</option>
+            <option value="Horror">👻 Horror</option>
+            <option value="Dystopian">🌍 Dystopian</option>
+            <option value="Post-Apocalyptic">💀 Post-Apocalyptic</option>
+            <option value="Historical Fiction">📜 Historical Fiction</option>
+            <option value="Coming of Age">🌱 Coming of Age</option>
+        </select>
+        <button onclick="filterByTrope()">Filter</button>
+
+        <select id="categoryFilter" onchange="updateSubCategoryFilter()">
+            <option value="">-- Filter by Category --</option>
+            <option value="Story">📖 Story / Romance</option>
+            <option value="Self Help">🌱 Self Help</option>
+            <option value="Educational">📚 Educational</option>
+            <option value="Health">💪 Health</option>
+        </select>
+
+        <select id="subCategoryFilter" style="display:none;">
+            <option value="">-- Filter by Sub-Category --</option>
+        </select>
+
+        <button onclick="filterByCategoryAndSub()">Apply</button>
+        <button onclick="clearFilters()">Clear All</button>
+    </div>
+
+    <div>
+        <h2>Add a New Book</h2>
+        <div class="form-row">
+            <input type="text" id="title" placeholder="Title">
+            <input type="text" id="author" placeholder="Author">
+            <input type="text" id="tropes" placeholder="Tropes">
+            <input type="text" id="description" placeholder="Description">
+        </div>
+        <div class="form-row">
+            <input type="text" id="imagePath" placeholder="Image URL (optional)">
+            <select id="category" onchange="toggleSubCategory()">
+                <option value="">-- Select Category --</option>
+                <option value="Story">📖 Story / Romance</option>
+                <option value="Self Help">🌱 Self Help</option>
+                <option value="Educational">📚 Educational</option>
+                <option value="Health">💪 Health</option>
+            </select>
+            <select id="subCategory" style="display:none;">
+                <option value="">-- Select Sub-Category --</option>
+            </select>
+            <select id="bookType">
+                <option value="">-- Book Type --</option>
+                <option value="Standalone">📖 Standalone</option>
+                <option value="Series">📚 Series</option>
+                <option value="Standalone Series">🔗 Standalone Series</option>
+            </select>
+            <select id="readingStatus">
+                <option value="">-- Reading Status --</option>
+                <option value="Want to Read">⭐ Want to Read</option>
+                <option value="Currently Reading">📘 Currently Reading</option>
+                <option value="Read">✅ Read</option>
+                <option value="TBR">⏳ To Be Read</option>
+            </select>
+            <input type="number" id="rating" placeholder="Rating" step="0.1">
+            <button onclick="addBook()">Add Book</button>
+        </div>
+    </div>
+
+    <div id="books">Loading...</div>
+    <div id="recommendations" style="display:none;"></div>
+</div>
+
+<script>
+    let allBooks = [];
+    let currentDisplayBooks = [];
+    let currentPage = 1;
+    let currentTab = 'all';
+    const pageSize = 5;
+
+    const storySubs = ['Romance', 'Fantasy', 'Thriller', 'Mystery', 'Sci-Fi', 'Horror', 'Young Adult', 'Historical Fiction', 'Contemporary', 'Paranormal', 'Dystopian', 'Adventure'];
+    const educationalSubs = ['History', 'Science', 'Mathematics', 'Psychology', 'Literature', 'Philosophy', 'Economics', 'Politics', 'Sociology', 'Biology', 'Chemistry', 'Physics', 'Geography', 'Linguistics'];
+
+    function toggleDarkMode() {
+        document.body.classList.toggle('dark-mode');
+        let btn = document.querySelector('.dark-mode-btn');
+        btn.innerHTML = document.body.classList.contains('dark-mode') ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function showTab(tab) {
+        currentTab = tab;
+        let btns = document.querySelectorAll('.tab-btn');
+        for (let i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+        event.target.classList.add('active');
+
+        if (tab === 'recommendations') {
+            document.getElementById('books').style.display = 'none';
+            document.getElementById('recommendations').style.display = 'block';
+            loadRecommendations();
+        } else {
+            document.getElementById('books').style.display = 'block';
+            document.getElementById('recommendations').style.display = 'none';
+            filterByStatus();
+        }
+    }
+
+    function filterByStatus() {
+        if (currentTab === 'all') {
+            currentDisplayBooks = [...allBooks];
+        } else if (currentTab === 'want') {
+            currentDisplayBooks = allBooks.filter(b => b.readingStatus === 'Want to Read');
+        } else if (currentTab === 'reading') {
+            currentDisplayBooks = allBooks.filter(b => b.readingStatus === 'Currently Reading');
+        } else if (currentTab === 'read') {
+            currentDisplayBooks = allBooks.filter(b => b.readingStatus === 'Read');
+        } else if (currentTab === 'tbr') {
+            currentDisplayBooks = allBooks.filter(b => b.readingStatus === 'TBR');
+        }
+        currentPage = 1;
+        displayBooks();
+        updateDashboard();
+    }
+
+    function filterByCategoryClick(category) {
+        let btns = document.querySelectorAll('.tab-btn');
+        for (let i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+        document.querySelector('.tab-btn').classList.add('active');
+        currentTab = 'all';
+        currentDisplayBooks = allBooks.filter(b => b.category === category);
+        currentPage = 1;
+        displayBooks();
+        document.getElementById('categoryFilter').value = category;
+        updateSubCategoryFilter();
+    }
+
+    function loadRecommendations() {
+        let readBooks = allBooks.filter(b => b.readingStatus === 'Read');
+
+        if (readBooks.length === 0) {
+            document.getElementById('recommendations').innerHTML = '<p style="text-align:center;">📚 Read some books first to get personalized recommendations!</p>';
+            return;
+        }
+
+        let authors = [];
+        let tropesList = [];
+        let categoriesList = [];
+
+        for (let i = 0; i < readBooks.length; i++) {
+            let b = readBooks[i];
+            if (!authors.includes(b.author)) authors.push(b.author);
+            if (!categoriesList.includes(b.category)) categoriesList.push(b.category);
+            if (b.tropes) {
+                let ts = b.tropes.split(',');
+                for (let j = 0; j < ts.length; j++) {
+                    let t = ts[j].trim();
+                    if (!tropesList.includes(t)) tropesList.push(t);
+                }
+            }
+        }
+
+        let readIds = readBooks.map(b => b.id);
+        let recommendations = [];
+
+        for (let i = 0; i < allBooks.length; i++) {
+            let b = allBooks[i];
+            if (readIds.includes(b.id)) continue;
+
+            let score = 0;
+            if (authors.includes(b.author)) score += 3;
+            if (categoriesList.includes(b.category)) score += 2;
+            if (b.tropes) {
+                for (let j = 0; j < tropesList.length; j++) {
+                    if (b.tropes.includes(tropesList[j])) score += 1;
+                }
+            }
+            if (score > 0) recommendations.push({ book: b, score: score });
+        }
+
+        recommendations.sort((a, b) => b.score - a.score);
+        recommendations = recommendations.slice(0, 12);
+
+        if (recommendations.length === 0) {
+            document.getElementById('recommendations').innerHTML = '<p style="text-align:center;">No recommendations available yet. Add more books to get suggestions!</p>';
+            return;
+        }
+
+        let html = '<h2>📚 Recommended for You</h2><div class="recommendations-container">';
+        for (let i = 0; i < recommendations.length; i++) {
+            let book = recommendations[i].book;
+            html += `<div class="recommendation-card">
+                        <strong>${escapeHtml(book.title)}</strong><br>
+                        <small>by ${escapeHtml(book.author)}</small><br>
+                        <small>🎭 ${book.tropes || 'No tropes'}</small><br>
+                        <small>⭐ ${book.averageRating}</small><br>
+                        <button onclick="quickAddToWant(${book.id})" style="margin-top:10px;">⭐ Want to Read</button>
+                    </div>`;
+        }
+        html += '</div>';
+        document.getElementById('recommendations').innerHTML = html;
+    }
+
+    function quickAddToWant(bookId) {
+        let book = allBooks.find(b => b.id === bookId);
+        if (book) {
+            book.readingStatus = 'Want to Read';
+            fetch(`/api/Books/${bookId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(book)
+            }).then(() => {
+                loadBooks();
+                alert('Added to Want to Read!');
+            });
+        }
+    }
+
+    function updateDashboard() {
+        let total = allBooks.length;
+        let want = allBooks.filter(b => b.readingStatus === 'Want to Read').length;
+        let reading = allBooks.filter(b => b.readingStatus === 'Currently Reading').length;
+        let read = allBooks.filter(b => b.readingStatus === 'Read').length;
+        let tbr = allBooks.filter(b => b.readingStatus === 'TBR').length;
+        document.getElementById('totalCount').innerText = total;
+        document.getElementById('wantCount').innerText = want;
+        document.getElementById('readingCount').innerText = reading;
+        document.getElementById('readCount').innerText = read;
+        document.getElementById('tbrCount').innerText = tbr;
+    }
+
+    function handleKeyPress(e) { if (e.key === 'Enter') searchBooks(); }
+
+    function showSuggestions() {
+        let term = document.getElementById('searchInput').value.toLowerCase();
+        let box = document.getElementById('suggestions');
+        if (!term) { box.style.display = 'none'; return; }
+        let matches = allBooks.filter(b => b.title.toLowerCase().includes(term)).slice(0, 8);
+        if (matches.length === 0) { box.style.display = 'none'; return; }
+        box.innerHTML = '';
+        for (let i = 0; i < matches.length; i++) {
+            let div = document.createElement('div');
+            div.innerHTML = matches[i].title;
+            div.onclick = (function(title) { return function() { document.getElementById('searchInput').value = title; box.style.display = 'none'; searchBooks(); }; })(matches[i].title);
+            box.appendChild(div);
+        }
+        box.style.display = 'block';
+    }
+
+    document.addEventListener('click', function(e) {
+        let box = document.getElementById('suggestions');
+        let input = document.getElementById('searchInput');
+        if (e.target !== input && e.target !== box) box.style.display = 'none';
+    });
+
+    function toggleSubCategory() {
+        let cat = document.getElementById('category').value;
+        let sub = document.getElementById('subCategory');
+        if (cat === 'Story') {
+            sub.style.display = 'inline-block';
+            sub.innerHTML = '<option value="">-- Select Story Genre --</option>';
+            for (let i = 0; i < storySubs.length; i++) sub.innerHTML += `<option value="${storySubs[i]}">📖 ${storySubs[i]}</option>`;
+        } else if (cat === 'Educational') {
+            sub.style.display = 'inline-block';
+            sub.innerHTML = '<option value="">-- Select Educational Subject --</option>';
+            for (let i = 0; i < educationalSubs.length; i++) sub.innerHTML += `<option value="${educationalSubs[i]}">📚 ${educationalSubs[i]}</option>`;
+        } else { sub.style.display = 'none'; sub.value = ''; }
+    }
+
+    function updateSubCategoryFilter() {
+        let cat = document.getElementById('categoryFilter').value;
+        let sub = document.getElementById('subCategoryFilter');
+        if (cat === 'Story') {
+            sub.style.display = 'inline-block';
+            sub.innerHTML = '<option value="">-- All Genres --</option>';
+            for (let i = 0; i < storySubs.length; i++) sub.innerHTML += `<option value="${storySubs[i]}">📖 ${storySubs[i]}</option>`;
+        } else if (cat === 'Educational') {
+            sub.style.display = 'inline-block';
+            sub.innerHTML = '<option value="">-- All Subjects --</option>';
+            for (let i = 0; i < educationalSubs.length; i++) sub.innerHTML += `<option value="${educationalSubs[i]}">📚 ${educationalSubs[i]}</option>`;
+        } else { sub.style.display = 'none'; sub.value = ''; }
+    }
+
+    function updateCategoryCounts() {
+        fetch('/api/Books').then(r => r.json()).then(data => {
+            let storyCount = data.filter(b => b.category === 'Story').length;
+            let selfHelpCount = data.filter(b => b.category === 'Self Help').length;
+            let educationalCount = data.filter(b => b.category === 'Educational').length;
+            let healthCount = data.filter(b => b.category === 'Health').length;
+            let totalCount = data.length;
+            document.getElementById('categoryCounts').innerHTML = `
+                <div class="count-card" onclick="filterByCategoryClick('Story')">
+                    <strong>📖 Story</strong><br>
+                    <div class="count-number">${storyCount}</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="count-card" onclick="filterByCategoryClick('Self Help')">
+                    <strong>🌱 Self Help</strong><br>
+                    <div class="count-number">${selfHelpCount}</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="count-card" onclick="filterByCategoryClick('Educational')">
+                    <strong>📚 Educational</strong><br>
+                    <div class="count-number">${educationalCount}</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="count-card" onclick="filterByCategoryClick('Health')">
+                    <strong>💪 Health</strong><br>
+                    <div class="count-number">${healthCount}</div>
+                    <small>Click to view</small>
+                </div>
+                <div class="count-card" onclick="loadBooks()">
+                    <strong>📚 Total Books</strong><br>
+                    <div class="count-number">${totalCount}</div>
+                    <small>Click to show all</small>
+                </div>
+            `;
+        });
+    }
+
+    function getStatusClass(status) {
+        if (status === 'Want to Read') return 'status-want';
+        if (status === 'Currently Reading') return 'status-reading';
+        if (status === 'Read') return 'status-read';
+        if (status === 'TBR') return 'status-tbr';
+        return '';
+    }
+
+    function displayBooks() {
+        let div = document.getElementById('books');
+        div.innerHTML = '';
+        if (currentDisplayBooks.length === 0) { div.innerHTML = '<p>No books found.</p>'; return; }
+        let start = (currentPage - 1) * pageSize;
+        let pageBooks = currentDisplayBooks.slice(start, start + pageSize);
+        for (let i = 0; i < pageBooks.length; i++) {
+            let book = pageBooks[i];
+            let statusClass = getStatusClass(book.readingStatus);
+            div.innerHTML += `<div class="book-card">
+                <div class="book-title">✨ ${escapeHtml(book.title)} ✨</div>
+                <div>by ${escapeHtml(book.author)}</div>
+                <div>🎭 ${book.tropes || ''}</div>
+                <div>📁 ${book.category || 'Uncategorized'} ${book.subCategory ? ` → ${book.subCategory}` : ''}</div>
+                <div>📌 ${book.bookType || 'Not specified'}</div>
+                <div>⭐ ${book.averageRating}</div>
+                <div><span class="status-badge ${statusClass}">${book.readingStatus || 'No status'}</span></div>
+                <div style="margin-top:10px;">
+                    <select id="status-select-${book.id}" onchange="updateBookStatus(${book.id}, this.value)">
+                        <option value="">Change Status</option>
+                        <option value="Want to Read">⭐ Want to Read</option>
+                        <option value="Currently Reading">📘 Currently Reading</option>
+                        <option value="Read">✅ Read</option>
+                        <option value="TBR">⏳ To Be Read</option>
+                    </select>
+                    <button onclick="editBook(${book.id})">Edit</button>
+                    <button onclick="deleteBook(${book.id})">Delete</button>
+                </div>
+            </div>`;
+        }
+        let totalPages = Math.ceil(currentDisplayBooks.length / pageSize);
+        if (totalPages > 1) {
+            let pg = '<div class="pagination">';
+            if (currentPage > 1) pg += `<button onclick="goToPage(${currentPage - 1})">← Previous</button>`;
+            pg += ` Page ${currentPage} of ${totalPages} `;
+            if (currentPage < totalPages) pg += `<button onclick="goToPage(${currentPage + 1})">Next →</button>`;
+            pg += '</div>';
+            div.innerHTML += pg;
+        }
+    }
+
+    function updateBookStatus(id, newStatus) {
+        let book = allBooks.find(b => b.id === id);
+        if (book) {
+            book.readingStatus = newStatus;
+            fetch(`/api/Books/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(book)
+            }).then(() => {
+                loadBooks();
+            });
+        }
+    }
+
+    function escapeHtml(str) { if (!str) return ''; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[m])); }
+    function goToPage(p) { currentPage = p; displayBooks(); }
+    function loadBooks() { fetch('/api/Books').then(r=>r.json()).then(d=>{ allBooks=d; currentDisplayBooks=[...allBooks]; currentPage=1; displayBooks(); updateCategoryCounts(); updateDashboard(); }); }
+    function sortByRating() { currentDisplayBooks = [...currentDisplayBooks].sort((a,b)=>b.averageRating - a.averageRating); currentPage=1; displayBooks(); }
+    function filterByTrope() { let t = document.getElementById('tropeSelect').value; currentDisplayBooks = t ? allBooks.filter(b=>b.tropes && b.tropes.includes(t)) : [...allBooks]; currentPage=1; displayBooks(); }
+    function filterByCategoryAndSub() { let cat = document.getElementById('categoryFilter').value, sub = document.getElementById('subCategoryFilter').value; if (!cat) { currentDisplayBooks = [...allBooks]; } else { let f = allBooks.filter(b=>b.category === cat); if(sub) f = f.filter(b=>b.subCategory === sub); currentDisplayBooks = f; } currentPage=1; displayBooks(); }
+    function clearFilters() { document.getElementById('categoryFilter').value = ''; document.getElementById('subCategoryFilter').style.display = 'none'; document.getElementById('tropeSelect').value = ''; document.getElementById('searchInput').value = ''; document.getElementById('suggestions').style.display = 'none'; currentDisplayBooks = [...allBooks]; currentPage=1; displayBooks(); }
+    function searchBooks() { let term = document.getElementById('searchInput').value.toLowerCase(); currentDisplayBooks = term ? allBooks.filter(b=>b.title.toLowerCase().includes(term)) : [...allBooks]; currentPage=1; displayBooks(); }
+
+    function addBook() {
+        let title = document.getElementById('title').value;
+        let author = document.getElementById('author').value;
+        let tropes = document.getElementById('tropes').value;
+        let description = document.getElementById('description').value;
+        let imagePath = document.getElementById('imagePath').value;
+        let category = document.getElementById('category').value;
+        let subCategory = document.getElementById('subCategory').value;
+        let bookType = document.getElementById('bookType').value;
+        let readingStatus = document.getElementById('readingStatus').value;
+        let rating = parseFloat(document.getElementById('rating').value) || 0;
+
+        if (!title || !author || !category) {
+            alert('Enter title, author, and category');
+            return;
+        }
+
+        let newBook = { title, author, tropes, description, imagePath, category, subCategory, bookType, averageRating: rating, readingStatus: readingStatus };
+
+        fetch('/api/Books', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newBook)
+        }).then(() => {
+            loadBooks();
+        });
+    }
+
+    function editBook(id) { fetch(`/api/Books/${id}`).then(r=>r.json()).then(b=>{ let t=prompt('New title:',b.title), a=prompt('New author:',b.author); if(t&&a) fetch(`/api/Books/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({...b,title:t,author:a})}).then(()=>loadBooks()); }); }
+    function deleteBook(id) { if(confirm('Delete this book?')) fetch(`/api/Books/${id}`,{method:'DELETE'}).then(()=>loadBooks()); }
+
+    loadBooks();
+</script>

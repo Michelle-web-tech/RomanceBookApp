@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>My Books</title>
+</head>
+<body>
+    <h1>My Romance Books</h1>
+    <div id="books">Loading...</div>
+
+    <script>
+        fetch('https://localhost:7134/api/Books')
+            .then(response => response.json())
+            .then(data => {
+                const booksDiv = document.getElementById('books');
+                booksDiv.innerHTML = '';
+                data.forEach(book => {
+                    booksDiv.innerHTML += `
+                        <div style="border:1px solid black; margin:10px; padding:10px;">
+                            <strong>${book.title}</strong> by ${book.author}<br>
+                            ${book.tropes}<br>
+                            Rating: ${book.averageRating}
+                        </div>
+                    `;
+                });
+            })
+            .catch(error => {
+                document.getElementById('books').innerHTML = 'Error: ' + error.message;
+            });
+    </script>
+</body>
+</html>

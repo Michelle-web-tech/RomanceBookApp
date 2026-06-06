@@ -1,0 +1,1 @@
+﻿UPDATE Books SET Category = 'Story' WHERE Category IS NULL OR Category = '';

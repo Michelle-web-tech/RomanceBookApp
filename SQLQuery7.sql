@@ -1,0 +1,1 @@
+﻿ALTER TABLE Books ADD SubCategory nvarchar(max) NULL;

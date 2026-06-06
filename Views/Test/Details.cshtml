@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Book Details";
+}
+
+<h1>📖 Book Details</h1>
+<div id="bookDetails">Loading...</div>
+<br>
+<a href="/Pages/Books">← Back to Books</a>
+
+<script>
+    const bookId = @ViewBag.BookId;
+
+    fetch(`/api/Books/${bookId}`)
+        .then(response => response.json())
+        .then(book => {
+            document.getElementById('bookDetails').innerHTML = `
+                <div style="border:1px solid #ccc; padding:15px; margin-top:15px; border-radius:10px;">
+                    <h2>${book.title}</h2>
+                    <p><strong>Author:</strong> ${book.author}</p>
+                    <p><strong>Tropes:</strong> ${book.tropes}</p>
+                    <p><strong>Rating:</strong> ⭐ ${book.averageRating} / 5</p>
+                    <p><strong>Description:</strong> ${book.description || 'No description available.'}</p>
+                </div>
+            `;
+        });
+</script>

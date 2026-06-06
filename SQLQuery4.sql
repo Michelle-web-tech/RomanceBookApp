@@ -1,0 +1,1 @@
+﻿UPDATE Books SET ImagePath = NULL;
